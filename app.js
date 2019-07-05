@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const users = require('./routes/user');
+const users = require('./routes/users');
 const login = require('./routes/login');
 const config = require('config');
 const error = require('./middleware/error');
