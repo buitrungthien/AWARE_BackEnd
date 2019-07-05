@@ -5,6 +5,7 @@ const login = require('./routes/login');
 const config = require('config');
 const error = require('./middleware/error');
 const app = express();
+const cors = require('cors');
 require('express-async-errors');
 
 if (!config.get('jwtPrivateKey')) {
@@ -18,6 +19,7 @@ mongoose.connect('mongodb://localhost/awaredb')
 
 // Middlewares
 app.use(express.json());
+app.use(cors());
 app.use('/api/users', users);
 app.use('/api/login', login);
 
