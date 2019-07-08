@@ -36,7 +36,7 @@ userSchema.methods.generateAuthToken = function () {
 
 const User = mongosoe.model('User', userSchema);
 
-function validateUser(user) {
+function validateNewUser(user) {
     const schema = {
         name: Joi.string().min(5).max(50).required(),
         email: Joi.string().min(5).max(255).required().email(),
@@ -46,5 +46,15 @@ function validateUser(user) {
     return Joi.validate(user, schema);
 }
 
+function validateChangeInfoUser(user) {
+    const schema = {
+        name: Joi.string().min(5).max(50).required(),
+        email: Joi.string().min(5).max(255).required().email(),
+    };
+
+    return Joi.validate(user, schema);
+}
+
 exports.User = User;
-exports.validate = validateUser;
+exports.validateNewUser = validateNewUser;
+exports.validateChangeInfoUser = validateChangeInfoUser;
