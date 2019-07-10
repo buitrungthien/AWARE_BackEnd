@@ -7,6 +7,7 @@ const error = require('./middleware/error');
 const app = express();
 const cors = require('cors');
 require('express-async-errors');
+const products = require('./routes/products');
 
 if (!config.get('jwtPrivateKey')) {
     console.error('FATAL ERROR: jwtPrivateKey is not defined.');
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/api/users', users);
 app.use('/api/login', login);
+app.use('/api/products', products);
 
 app.use(error);
 
