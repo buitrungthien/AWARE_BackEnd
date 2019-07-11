@@ -50,16 +50,8 @@ const productSchema = new Schema({
         type: String,
         default: 'Unknown'
     },
-    sizes: [{
-        type: String,
-        required: true,
-        enum: constant.SIZES
-    }],
-    colors: [{
-        type: String,
-        required: true,
-        enum: constant.COLORS
-    }],
+    sizes: [{type: String}],
+    colors: [{type: String}],
     description: {
         type: String
     }

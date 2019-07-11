@@ -4,9 +4,15 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const auth = require('../middleware/auth');
+const seller = require('../middleware/seller');
 
 
 router.get('/me', auth, async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
+});
+
+router.get('/seller', [auth, seller], async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
     res.send(user);
 });
