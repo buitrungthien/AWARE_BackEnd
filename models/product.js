@@ -7,9 +7,7 @@ const Schema = mongoose.Schema;
 const productSchema = new Schema({
     name: {
         type: String,
-        required: true,
-        minlength: 10,
-        maxlength: 255
+        required: true
     },
     categoryOfGender: {
         type: String,
