@@ -19,8 +19,9 @@ mongoose.connect('mongodb://localhost/awaredb')
     .catch(err => console.error('Could not coneect to MongoDB...', err));
 
 // Middlewares
-app.use(express.json());
 app.use(cors());
+app.use('/images', express.static('images'));
+app.use(express.json());
 app.use('/api/users', users);
 app.use('/api/login', login);
 app.use('/api/products', products);
