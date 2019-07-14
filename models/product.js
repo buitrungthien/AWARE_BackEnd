@@ -5,6 +5,7 @@ const constant = require('../constants/index');
 const Schema = mongoose.Schema;
 
 const productSchema = new Schema({
+    images: [{type: String}],
     name: {
         type: String,
         required: true
@@ -39,10 +40,6 @@ const productSchema = new Schema({
         type: Number,
         required: true,
         min: 0
-    },
-    imageURL: {
-        type: String,
-        required: true
     },
     brand: {
         type: String,

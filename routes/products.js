@@ -32,6 +32,11 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+router.get('/images', async (req, res) => {
+    const products = await Product.find();
+    res.send(products);
+});
+
 router.post('/images', [auth, seller], upload.single('productImage'), async (req, res) => {
     path = req.file.path;
     res.send(path);
@@ -46,7 +51,7 @@ router.delete('/images', [auth, seller], async (req, res) => {
 });
 
 router.post('/', [auth, seller], async (req, res) => {
-    let product = new Product(_.pick(req.body, ['name', 'categoryOfGender', 'subCategory', 'quantity', 'price', 'imageURL', 'brand', 'sizes', 'colors', 'description']));
+    let product = new Product(_.pick(req.body, ['images', 'name', 'categoryOfGender', 'subCategory', 'quantity', 'price', 'imageURL', 'brand', 'sizes', 'colors', 'description']));
     product.remain = product.quantity;
     product.createdDate = new Date();
     await product.save();
