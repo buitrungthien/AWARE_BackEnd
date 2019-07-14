@@ -5,6 +5,7 @@ const router = express.Router();
 const auth = require('../middleware/auth');
 const seller = require('../middleware/seller');
 const multer = require('multer');
+const fs = require('fs');
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -31,9 +32,17 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
-router.post('/images', upload.single('productImage'), async (req, res) => {
+router.post('/images', [auth, seller], upload.single('productImage'), async (req, res) => {
     path = req.file.path;
-    res.send('http://localhost:5000/' + path);
+    res.send(path);
+});
+
+router.delete('/images', [auth, seller], async (req, res) => {
+    const reqImgPath = req.headers.imgpath;
+    fs.unlink(reqImgPath, err => {
+        err ? console.log(err) : null;
+    });
+    res.status(200).send();
 });
 
 router.post('/', [auth, seller], async (req, res) => {
