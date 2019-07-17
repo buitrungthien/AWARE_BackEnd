@@ -1,6 +1,5 @@
 module.exports = Object.freeze({
-    CATEGORY_OF_GENDER: ['men', 'ladies', 'girls', 'boys'],
-    SUB_CATEGORY: ['tops', 'bottoms', 'dresses', 'jackets', 'shoes', 'accesories', 'sale'],
+    CATEGORIES: ['men', 'ladies', 'girls', 'boys', 'tops', 'bottoms', 'dresses', 'jackets', 'shoes', 'accesories', 'sale', 'casual', 'going out', 'party', 'ocassion', 'mini', 'maxi', 'sets'],
     SIZES: ['S', 'M', 'L', 'XL'],
     COLORS: ['red', 'orange', 'blue', 'pink', 'black', 'white']
 });

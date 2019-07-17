@@ -32,6 +32,39 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+router.get('/', async (req, res) => {
+    const { gender, subcategory, category, pageNumber } = req.query;
+    const pageSize = 20;
+    let totalPages = 1;
+    let queryArray = [];
+    gender ? queryArray.push(gender) : null;
+    subcategory ? queryArray.push(subcategory) : null;
+    category !== 'all' ? queryArray.push(category) : null;
+    if (queryArray.length === 0) {
+        let products = await Product
+            .find();
+        totalPages = Math.ceil(products.length / 20);
+
+        products = await Product
+            .find()
+            .skip((pageNumber - 1) * pageSize)
+            .limit(pageSize)
+            .sort({ createdDate: -1 })
+            .select('-__v');
+        return res.send({ products: products, totalPages: totalPages });
+    }
+    let products = await Product
+        .find({ categories: { $all: queryArray } });
+    totalPages = Math.ceil(products.length / 20);
+    products = await Product
+        .find({ categories: { $all: queryArray } })
+        .skip((pageNumber - 1) * pageSize)
+        .limit(pageSize)
+        .sort({ createdDate: -1 })
+        .select('-_id -__v');
+    res.send({ products: products, totalPages: totalPages });
+});
+
 router.get('/images', async (req, res) => {
     const products = await Product.find();
     res.send(products);
@@ -51,7 +84,7 @@ router.delete('/images', [auth, seller], async (req, res) => {
 });
 
 router.post('/', [auth, seller], async (req, res) => {
-    let product = new Product(_.pick(req.body, ['images', 'name', 'categoryOfGender', 'subCategory', 'quantity', 'price', 'imageURL', 'brand', 'sizes', 'colors', 'description']));
+    let product = new Product(_.pick(req.body, ['images', 'name', 'categories', 'quantity', 'price', 'imageURL', 'brand', 'sizes', 'colors', 'description']));
     product.remain = product.quantity;
     product.createdDate = new Date();
     await product.save();

@@ -10,16 +10,7 @@ const productSchema = new Schema({
         type: String,
         required: true
     },
-    categoryOfGender: {
-        type: String,
-        required: true,
-        enum: constant.CATEGORY_OF_GENDER
-    },
-    subCategory: {
-        type: String,
-        required: true,
-        enum: constant.SUB_CATEGORY
-    },
+    categories: [{type: String}],
     quantity: {
         type: Number,
         required: true,
@@ -57,8 +48,7 @@ const Product = mongoose.model('Product', productSchema);
 function validateProduct(product) {
     const schema = {
         name: Joi.string().required().min(10).max(255),
-        categoryOfGender: Joi.string().required().valid(constant.CATEGORY_OF_GENDER),
-        subCategory: Joi.string().required().valid(constant.SUB_CATEGORY),
+        categories: Joi.string().required().valid(constant.CATEGORIES),
         quantity: Joi.number().min(0).max(1000).required(),
         imageURL: Joi.string(),
         brand: Joi.string().required(),
