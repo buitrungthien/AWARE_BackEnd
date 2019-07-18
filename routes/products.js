@@ -32,6 +32,14 @@ const upload = multer({
     fileFilter: fileFilter
 });
 
+router.get('/:id', async (req, res) => {
+    let product = await Product.findById(req.params.id);
+    let moreFrom = await Product
+        .find({ brand: product.brand })
+        .limit(4);
+    res.send({ product: product, moreFrom: moreFrom });
+});
+
 router.get('/', async (req, res) => {
     const { gender, subcategory, category, pageNumber } = req.query;
     const pageSize = 20;
