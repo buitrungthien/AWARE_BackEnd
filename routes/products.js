@@ -61,7 +61,7 @@ router.get('/', async (req, res) => {
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort({ createdDate: -1 })
-        .select('-_id -__v');
+        .select('-__v');
     res.send({ products: products, totalPages: totalPages });
 });
 
