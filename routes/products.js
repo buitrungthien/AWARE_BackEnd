@@ -41,36 +41,37 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    const { gender, subcategory, category, pageNumber } = req.query;
-    const pageSize = 20;
+    let { gender, subcategory, category, pageNumber, pageSize } = req.query;
     let totalPages = 1;
     let queryArray = [];
+    pageNumber = +pageNumber;
+    pageSize = +pageSize;
     gender ? queryArray.push(gender) : null;
     subcategory ? queryArray.push(subcategory) : null;
     category !== 'all' ? queryArray.push(category) : null;
     if (queryArray.length === 0) {
         let products = await Product
             .find();
-        totalPages = Math.ceil(products.length / 20);
-
+        const numOfProducts = products.length;
+        totalPages = Math.ceil(products.length / pageSize);
         products = await Product
             .find()
             .skip((pageNumber - 1) * pageSize)
             .limit(pageSize)
             .sort({ createdDate: -1 })
             .select('-__v');
-        return res.send({ products: products, totalPages: totalPages });
+        return res.send({ products: products, totalPages: totalPages, numOfProducts: numOfProducts });
     }
     let products = await Product
         .find({ categories: { $all: queryArray } });
-    totalPages = Math.ceil(products.length / 20);
+    totalPages = Math.ceil(products.length / pagesize);
     products = await Product
         .find({ categories: { $all: queryArray } })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort({ createdDate: -1 })
         .select('-__v');
-    res.send({ products: products, totalPages: totalPages });
+    res.send({ products: products, totalPages: totalPages, numOfProducts: numOfProducts });
 });
 
 router.get('/images', async (req, res) => {
