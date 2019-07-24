@@ -41,7 +41,7 @@ router.get('/:id', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-    let { gender, subcategory, category, pageNumber, pageSize } = req.query;
+    let { gender, subcategory, category, pageNumber, pageSize = 20 } = req.query;
     let totalPages = 1;
     let queryArray = [];
     pageNumber = +pageNumber;
@@ -64,14 +64,15 @@ router.get('/', async (req, res) => {
     }
     let products = await Product
         .find({ categories: { $all: queryArray } });
-    totalPages = Math.ceil(products.length / pagesize);
+    totalPages = Math.ceil(products.length / pageSize);
+    const numOfProducts = products.length;
     products = await Product
         .find({ categories: { $all: queryArray } })
         .skip((pageNumber - 1) * pageSize)
         .limit(pageSize)
         .sort({ createdDate: -1 })
         .select('-__v');
-    res.send({ products: products, totalPages: totalPages, numOfProducts: numOfProducts });
+    return res.send({ products: products, totalPages: totalPages, numOfProducts: numOfProducts });
 });
 
 router.get('/images', async (req, res) => {

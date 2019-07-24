@@ -7,18 +7,20 @@ const auth = require('../middleware/auth');
 const seller = require('../middleware/seller');
 
 router.post('/', auth, async (req, res) => {
-    let order = new Order(_.pick(req.body, ['customerID', 'orderedItem', 'status']));
+    let order = new Order(_.pick(req.body, ['customerID', 'orderedProducts', 'status']));
     order.createdDate = new Date();
-    const product = await Product.findById(order.orderedItem.productID);
-    if (product.remain - order.orderedItem.chosenQuantity >= 0) {
-        product.remain = product.remain - order.orderedItem.chosenQuantity;
-        order.status = 'pending';
-        await order.save();
-        await product.save();
-        return res.status(200).send();
-    } else {
-        return res.status(400).send('The quantity of this product is not enough in the stock');
+    for (let i = 0; i < order.orderedProducts.length; i++) {
+        const product = await Product.findById(order.orderedProducts[i].productID);
+        if (product.remain - order.orderedProducts[i].chosenQuantity >= 0) {
+            product.remain = product.remain - order.orderedProducts[i].chosenQuantity;
+            await product.save();
+        } else {
+            return res.status(400).send(`The quantity of ${order.orderedProducts[i].productName} is not enough in the stock`);
+        }
     }
+    order.status = 'pending';
+    await order.save();
+    return res.status(200).send();
 });
 
 router.get('/', [auth, seller], async (req, res) => {
@@ -40,7 +42,7 @@ router.get('/', [auth, seller], async (req, res) => {
 
 router.patch('/', async (req, res) => {
     const { orderID, changedStatus } = req.query;
-    const order = await Order.findOneAndUpdate({_id: orderID}, {status: changedStatus});
+    const order = await Order.findOneAndUpdate({ _id: orderID }, { status: changedStatus });
     res.status(200).send();
 });
 
